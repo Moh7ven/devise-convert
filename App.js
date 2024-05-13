@@ -7,6 +7,7 @@ export default function App() {
     <PaperProvider>
       <View style={styles.container}>
         <Text>Open up App.js to start working on your app!</Text>
+        <Text>C'est le teste</Text>
         <StatusBar style="auto" />
       </View>
     </PaperProvider>
