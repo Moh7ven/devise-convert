@@ -51,6 +51,7 @@ export default function App() {
         <StatusBar style="auto" />
       </View> */}
 
+      {/* example */}
       <ScrollView>
         <Box
           flex={1}
