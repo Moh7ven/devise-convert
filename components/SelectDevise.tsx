@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import {
   Select,
@@ -11,34 +11,44 @@ import {
   SelectDragIndicatorWrapper,
   SelectDragIndicator,
   SelectItem,
+  SelectFlatList,
 } from "@/components/ui/select";
 import { ChevronDownIcon } from "@/components/ui/icon";
+import { CurrencyItem } from "@/utils/types/CurrencyItem";
 
 export default function SelectDevise({
   placeholder,
-  ...props
+  currencies,
 }: SelectDeviseProps) {
+  console.log("Currencies: ", currencies);
+
   return (
     <View>
       <Select>
-        <SelectTrigger variant="rounded" size="md">
-          <SelectInput placeholder={placeholder} />
+        <SelectTrigger variant="rounded" size="md" className="w-[120px]">
+          <SelectInput
+            placeholder={placeholder}
+            className="w-[90px] overflow-hidden text-ellipsis whitespace-nowrap"
+          />
           <SelectIcon className="mr-3" as={ChevronDownIcon} />
         </SelectTrigger>
         <SelectPortal>
           <SelectBackdrop />
-          <SelectContent>
+          <SelectContent maxHeight={400}>
             <SelectDragIndicatorWrapper>
               <SelectDragIndicator />
             </SelectDragIndicatorWrapper>
-            <SelectItem label="UX Research" value="ux" />
-            <SelectItem label="Web Development" value="web" />
-            <SelectItem
-              label="Cross Platform Development Process"
-              value="Cross Platform Development Process"
+            <SelectFlatList
+              data={currencies}
+              keyExtractor={(item: CurrencyItem, _): string => item.value}
+              renderItem={({ item }) => (
+                <SelectItem
+                  key={item.value}
+                  label={item.value + " - " + item.label}
+                  value={item.value}
+                />
+              )}
             />
-            <SelectItem label="UI Designing" value="ui" isDisabled={true} />
-            <SelectItem label="Backend Development" value="backend" />
           </SelectContent>
         </SelectPortal>
       </Select>
@@ -46,6 +56,9 @@ export default function SelectDevise({
   );
 }
 
-type SelectDeviseProps = {
+interface SelectDeviseProps {
   placeholder: string;
-};
+  currencies: CurrencyItem[];
+  snapPoints?: number[];
+  maxHeight?: number;
+}
