@@ -22,6 +22,10 @@ export default function SelectDevise({
 }: SelectDeviseProps) {
   console.log("Currencies: ", currencies);
 
+  function handleSelect() {
+    console.log("Select");
+  }
+
   return (
     <View>
       <Select>
@@ -46,6 +50,7 @@ export default function SelectDevise({
                   key={item.value}
                   label={item.value + " - " + item.label}
                   value={item.value}
+                  onPress={handleSelect}
                 />
               )}
             />
