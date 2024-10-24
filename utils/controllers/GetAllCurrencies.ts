@@ -16,13 +16,14 @@ export const getAllCurrencies = async (): Promise<CurrencyItem[]> => {
   try {
     const response = await fetch(url, options);
     const result: CurrencyApiResponse = await response.json();
-    console.log(result);
+
     if (result.success) {
       return result.symbols;
     } else {
       console.error("API request unsuccessful");
       return [];
     }
+    
   } catch (error) {
     console.error(error);
     return [];

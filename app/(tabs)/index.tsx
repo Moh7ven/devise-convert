@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { HStack, Box, RepeatIcon, set } from "@gluestack-ui/themed";
-import { Icon } from "@/components/ui/icon";
+import {
+  HStack,
+  Box,
+  RepeatIcon,
+  VStack,
+  Button,
+  ButtonText,
+  Pressable,
+} from "@gluestack-ui/themed";
+import { Icon, HelpCircleIcon, CloseIcon } from "@/components/ui/icon";
 
 import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
@@ -9,25 +17,91 @@ import SelectDeviseTo from "@/components/SelectDeviseTo";
 import DeviseComponant from "@/components/DeviseComponant";
 import { getAllCurrencies } from "@/utils/controllers/GetAllCurrencies";
 import { CurrencyItem } from "@/utils/types/CurrencyItem";
+import {
+  useToast,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+} from "@/components/ui/toast";
+
 export default function TabOneScreen() {
   const [currencyArray, setCurrencyArray] = useState<CurrencyItem[]>([]);
   const [deviseFromValue, setDeviseFromValue] = useState<string>("");
   const [deviseToValue, setDeviseToValue] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
+
+  const toast = useToast();
+  const [toastId, setToastId] = React.useState(0);
+
+  const handleToast = () => {
+    if (!toast.isActive(toastId)) {
+      showNewToast();
+    }
+  };
+  const showNewToast = () => {
+    const newId = Math.random();
+    setToastId(newId);
+    toast.show({
+      id: newId,
+      placement: "top",
+      duration: 3000,
+      render: ({ id }) => {
+        const uniqueToastId = "toast-" + id;
+        return (
+          <Toast
+            action="error"
+            variant="outline"
+            nativeID={uniqueToastId}
+            className="p-4 gap-6 border-error-500 w-full shadow-hard-5 max-w-[443px] flex-row justify-between"
+          >
+            <HStack space="md">
+              <Icon as={HelpCircleIcon} className="stroke-error-500 mt-0.5" />
+              <VStack space="xs">
+                <ToastTitle className="font-semibold text-error-500">
+                  Error!
+                </ToastTitle>
+                <ToastDescription size="sm">
+                  Something went wrong.
+                </ToastDescription>
+              </VStack>
+            </HStack>
+            {/* <HStack className="min-[450px]:gap-3 gap-1">
+              <Button variant="link" size="sm" className="px-3.5 self-center">
+                <ButtonText>Retry</ButtonText>
+              </Button>
+              <Pressable onPress={() => toast.close(id)}>
+                <Icon as={CloseIcon} />
+              </Pressable>
+            </HStack> */}
+          </Toast>
+        );
+      },
+    });
+  };
 
   useEffect(() => {
     async function fetchData() {
       const result = await getAllCurrencies();
-      setCurrencyArray(
-        result &&
-          Object.keys(result).map((key) => ({
-            value: key,
-            label: result[key],
-          }))
-      );
+      if (result && result.length === 0) {
+        handleToast();
+      } else {
+        setCurrencyArray(
+          result &&
+            Object.keys(result).map((key) => ({
+              value: key,
+              label: result[key],
+            }))
+        );
+      }
     }
 
     fetchData();
   }, []);
+
+  const convertCurrencies = async () => {
+    if (deviseFromValue && deviseToValue) {
+    }
+  };
 
   const deviseFrom = (value: string) => {
     console.log("Devise from: ", value);
@@ -37,6 +111,11 @@ export default function TabOneScreen() {
   const deviseTo = (value: string) => {
     console.log("Devise to: ", value);
     setDeviseToValue(value);
+  };
+
+  const amountValue = (value: number) => {
+    console.log("Amount: ", value);
+    setAmount(value);
   };
 
   return (
@@ -65,7 +144,7 @@ export default function TabOneScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <DeviseComponant />
+      <DeviseComponant amountValue={amountValue} />
     </View>
   );
 }
