@@ -16,19 +16,22 @@ import {
 import { ChevronDownIcon } from "@/components/ui/icon";
 import { CurrencyItem } from "@/utils/types/CurrencyItem";
 
-export default function SelectDevise({
+export default function SelectDeviseFrom({
   placeholder,
   currencies,
+  deviseFrom,
 }: SelectDeviseProps) {
-  console.log("Currencies: ", currencies);
+  // console.log("Currencies: ", currencies);
 
-  function handleSelect() {
-    console.log("Select");
+  const [deviseCollected, setDeviseCollected] = useState<object>({});
+
+  function handleSelect(value: string) {
+    deviseFrom(value);
   }
 
   return (
     <View>
-      <Select>
+      <Select onValueChange={(value) => handleSelect(value)}>
         <SelectTrigger variant="rounded" size="md" className="w-[120px]">
           <SelectInput
             placeholder={placeholder}
@@ -44,13 +47,13 @@ export default function SelectDevise({
             </SelectDragIndicatorWrapper>
             <SelectFlatList
               data={currencies}
+              onPress={handleSelect}
               keyExtractor={(item: CurrencyItem, _): string => item.value}
               renderItem={({ item }) => (
                 <SelectItem
                   key={item.value}
                   label={item.value + " - " + item.label}
                   value={item.value}
-                  onPress={handleSelect}
                 />
               )}
             />
@@ -66,4 +69,5 @@ interface SelectDeviseProps {
   currencies: CurrencyItem[];
   snapPoints?: number[];
   maxHeight?: number;
+  deviseFrom: (value: string) => void;
 }

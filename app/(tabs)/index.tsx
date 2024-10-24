@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { HStack, Box, RepeatIcon } from "@gluestack-ui/themed";
+import { HStack, Box, RepeatIcon, set } from "@gluestack-ui/themed";
 import { Icon } from "@/components/ui/icon";
 
 import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
-import SelectDevise from "@/components/SelectDevise";
+import SelectDeviseFrom from "@/components/SelectDeviseFrom";
+import SelectDeviseTo from "@/components/SelectDeviseTo";
 import DeviseComponant from "@/components/DeviseComponant";
 import { getAllCurrencies } from "@/utils/controllers/GetAllCurrencies";
 import { CurrencyItem } from "@/utils/types/CurrencyItem";
 export default function TabOneScreen() {
   const [currencyArray, setCurrencyArray] = useState<CurrencyItem[]>([]);
+  const [deviseFromValue, setDeviseFromValue] = useState<string>("");
+  const [deviseToValue, setDeviseToValue] = useState<string>("");
 
   useEffect(() => {
     async function fetchData() {
@@ -26,6 +29,16 @@ export default function TabOneScreen() {
     fetchData();
   }, []);
 
+  const deviseFrom = (value: string) => {
+    console.log("Devise from: ", value);
+    setDeviseFromValue(value);
+  };
+
+  const deviseTo = (value: string) => {
+    console.log("Devise to: ", value);
+    setDeviseToValue(value);
+  };
+
   return (
     <View style={styles.container}>
       <HStack
@@ -33,11 +46,19 @@ export default function TabOneScreen() {
         reversed={false}
         className="w-[90%] flex-row align-center justify-around"
       >
-        <SelectDevise placeholder="You are" currencies={currencyArray} />
+        <SelectDeviseFrom
+          placeholder="You are"
+          currencies={currencyArray}
+          deviseFrom={deviseFrom}
+        />
         <Box className="h-[40px] w-[40px] border-2 border-orange-400 rounded-md flex items-center justify-center">
           <Icon as={RepeatIcon} className="text-orange-400" />
         </Box>
-        <SelectDevise placeholder="You need" currencies={currencyArray} />
+        <SelectDeviseTo
+          placeholder="You need"
+          currencies={currencyArray}
+          deviseTo={deviseTo}
+        />
       </HStack>
       <View
         style={styles.separator}
